@@ -42,9 +42,23 @@ def parse_body(raw: bytes) -> Any:
     if not raw:
         raise ValidationFailure([("", "request body is empty; expected a JSON object")])
     try:
-        data = json.loads(raw.decode("utf-8"))
-    except (UnicodeDecodeError, json.JSONDecodeError) as exc:
-        raise ValidationFailure([("", f"request body is not valid JSON: {exc.msg}")]) from None
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise ValidationFailure(
+            [
+                (
+                    "",
+                    f"request body is not valid UTF-8 at byte {exc.start}: "
+                    f"{exc.reason}",
+                )
+            ]
+        ) from None
+    try:
+        data = json.loads(text)
+    except json.JSONDecodeError as exc:
+        raise ValidationFailure(
+            [("", f"request body is not valid JSON: {exc.msg}")]
+        ) from None
     if not isinstance(data, dict):
         raise ValidationFailure(
             [("", "request body must be a JSON object with symbols/weights/max_depth")]

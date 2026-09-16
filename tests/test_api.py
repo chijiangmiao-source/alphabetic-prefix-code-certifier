@@ -150,6 +150,21 @@ def test_malformed_json() -> None:
     assert resp.status_code == 422
     errors = resp.json()["errors"]
     assert errors[0]["pointer"] == ""
+    assert "JSON" in errors[0]["message"]
+
+
+def test_non_utf8_body_is_request_format_error_not_500() -> None:
+    """无法按 UTF-8 解码的请求体必须返回 422 请求格式错误，而非 500。"""
+    resp = client.post(
+        "/api/v1/encode",
+        content=b"\xff\xfe{not utf8",
+        headers={"content-type": "application/json"},
+    )
+    assert resp.status_code == 422
+    errors = resp.json()["errors"]
+    assert len(errors) == 1
+    assert errors[0]["pointer"] == ""
+    assert "UTF-8" in errors[0]["message"]
 
 
 def test_empty_body() -> None:
