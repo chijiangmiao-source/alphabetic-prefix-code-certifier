@@ -1,0 +1,10 @@
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+pythonpath = ["."]
+
+[project]
+name = "alphabetic-prefix-code"
+version = "1.0.0"
+description = "Depth-limited, order-preserving optimal binary prefix code service"
+requires-python = ">=3.13"

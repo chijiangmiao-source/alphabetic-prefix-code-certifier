@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+
+# 虚拟环境（本地引导的依赖环境，不入库）
+.venv/
+venv/
+
+# 测试与覆盖率缓存
+.pytest_cache/
+.coverage
+htmlcov/
+
+# 编辑器/系统
+.DS_Store
+.idea/
+.vscode/
